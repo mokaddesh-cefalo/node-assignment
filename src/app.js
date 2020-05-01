@@ -1,9 +1,23 @@
 const express = require('express');
-var path = require('path');
-var exphbs = require('express-handlebars');
+const path = require('path');
+const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
+
 
 const globalMiddleware = require('./controller/global')
 
+
+mongoose.connect('mongodb://localhost/tintin', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const db = mongoose.connection;
+
+db.on('error', function(err) {
+    console.error(err);
+});
+
+db.once('open', function() {
+    console.log('Connected to mongoose');
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,11 +43,12 @@ app.use(globalMiddleware.requestLogger);
 
 app.use(globalMiddleware.registerUser);
 
-app.use(globalMiddleware.addUserInfo);
+app.use(globalMiddleware.addUserInfoFromToken);
 
 app.use('/', async (req, res) => {
     console.log(req.user);
-    res.send({});
+    res.setHeader('authorization', req.headers.authorization);
+    res.render('home', req.user);
 });
 
 app.use(async (err, req, res, next) => {

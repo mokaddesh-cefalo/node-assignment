@@ -6,7 +6,7 @@ const exceptions = require('../exceptions/custom.exception')
 const jwtVerify = util.promisify(jwt.verify);
 const jwtSign = util.promisify(jwt.sign);
 
-const extractUserTokenFromAuthToken = async (authorization) => {
+const extractInfoFromToken = async (authorization) => {
     let tokenInfo = null;
 
     if (authorization) {
@@ -20,9 +20,9 @@ const extractUserTokenFromAuthToken = async (authorization) => {
     return tokenInfo;
 }
 
-const createToken = async (name, type) => {
-    let token = await jwtSign({ name:name, type:type }, process.env.privatekey);
+const createToken = async (info) => {
+    let token = await jwtSign({ data: info }, process.env.privatekey);
     return `Bearer ${token}`;
 }
 
-module.exports = {extractUserTokenFromAuthToken, createToken};
+module.exports = {extractInfoFromToken, createToken};
