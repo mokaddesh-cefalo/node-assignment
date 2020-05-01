@@ -1,6 +1,6 @@
 const express = require('express');
 
-const logger = require('./controller/logger')
+const globalMiddleware = require('./controller/global')
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,13 +9,18 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(logger.requestLogger);
+app.use(globalMiddleware.requestLogger);
 
-app.use('/', (req, res) => {
-    res.send({message: "All I know are sad song"});
+app.use(globalMiddleware.registerUser);
+
+app.use(globalMiddleware.addUserInfo);
+
+app.use('/', async (req, res) => {
+    console.log(req.user);
+    res.send({});
 });
 
-app.use((err, req, res, next) => {
+app.use(async (err, req, res, next) => {
     console.error(err.message);
     res.sendStatus(500);
 });

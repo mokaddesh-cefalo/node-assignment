@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "PORT=3000 node src/app.js",
-    "dev": "PORT=3000 nodemon src/app.js"
+    "start": "privatekey=secret PORT=3000 node src/app.js",
+    "dev": "privatekey=secret PORT=3000 nodemon src/app.js"
   },
   "repository": {
     "type": "git",
