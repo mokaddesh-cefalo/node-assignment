@@ -4,7 +4,9 @@ const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 
 
-const globalMiddleware = require('./controller/global')
+const globalMiddleware = require('./controller/global.controller')
+const chatRoomRouter = require('./controller/chatroom.router');
+const chatRoomService = require('./service/chatroom.service');
 
 
 mongoose.connect('mongodb://localhost/tintin', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -45,10 +47,15 @@ app.use(globalMiddleware.registerUser);
 
 app.use(globalMiddleware.addUserInfoFromToken);
 
+
+app.use('/chatrooms', chatRoomRouter);
+
 app.use('/', async (req, res) => {
-    console.log(req.user);
+    let chatRooms = await chatRoomService.getAllChatRoom();
+    let token = req.headers.authorization;
+
     res.setHeader('authorization', req.headers.authorization);
-    res.render('home', req.user);
+    res.render('home', { token, chatRooms });
 });
 
 app.use(async (err, req, res, next) => {

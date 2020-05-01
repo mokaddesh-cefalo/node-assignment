@@ -8,7 +8,7 @@ const createUser = async info => {
         return user;
     } catch(err) {
         console.log(err);
-        throw new InvalidUserException(`Could not create user, data: ${info}`);
+        throw new InValidData(`Could not create user, data: ${info}`);
     }
 }
 

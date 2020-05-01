@@ -1,5 +1,26 @@
-<form action="/create-chatroom" method="POST">
-  <label for="name">Create chatroom:</label>
-  <input type="text" id="name" name="name">
-  <input type="submit" value="Sign In">
-</form> 
+{{# each chatRooms }}
+    {{log this}}
+    <button onclick="joinRoom('{{ this._id }}')">{{ this.name }}</button>
+{{/ each }}
+
+
+<script type="text/javascript">
+  const joinRoom = (id) => {
+    let url = "http://localhost:3000/chatrooms/" + id;
+    let token = $("#token").val();
+
+    $.get({
+            url: url,
+            headers: {
+                'authorization': token
+            },
+            success: (result) => {
+                document.open();
+                console.log(result);
+                document.write(result);
+                document.close();
+            }
+        });
+      
+  }
+</script>

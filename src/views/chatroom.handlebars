@@ -1,0 +1,5 @@
+{{ chatroom.name }}
+
+{{# each chatroom.users }}
+    {{ this.name }}({{ this.type }})
+{{/ each }}

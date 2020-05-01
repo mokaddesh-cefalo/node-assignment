@@ -1,14 +1,40 @@
 const ChatRoomModel = require('../model/ChatRoomModel');
 
-const createUser = async info => {
+const createChatRoom = async info => {
     try {
-        let user = new UserModel(info);
-        user = (await user.save());
-        return user;
+        console.log(info);
+        let chatRoom = new ChatRoomModel(info);
+        chatRoom = (await chatRoom.save());
+        return chatRoom;
     } catch(err) {
         console.log(err);
-        throw new InvalidUserException(`Could not create user, data: ${info}`);
+        throw new InValidData(`Could not create chat room, Chat room name should be unique, data: ${info}`);
     }
 }
 
-module.exports = { createNewUser: createUser };
+const getChatRoomById = async (_id) => {
+    let chatRoom = await ChatRoomModel.findById(_id).lean().exec();
+    console.log(chatRoom);
+    return !chatRoom ? null : chatRoom;
+}
+
+const getAllChatRoom = async () => {
+    return (await doFindQuery({}));
+}
+
+const addUserInChatRoom = async(_id, user) => {
+    let chatRoom = await ChatRoomModel.findById(_id);
+    chatRoom.users.push(user);
+    await chatRoom.save().exec();
+    console.log(chatRoom);
+}
+
+const doFindQuery = async (options) => {
+    let chatRooms = await ChatRoomModel.find(options)
+        .sort( { name: 1 } )
+        .lean()
+        .exec();
+    return chatRooms;
+}
+
+module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, addUserInChatRoom };
