@@ -20,4 +20,9 @@ const extractUserTokenFromAuthToken = async (authorization) => {
     return tokenInfo;
 }
 
-module.exports = {extractUserTokenFromAuthToken};
+const createToken = async (name, type) => {
+    let token = await jwtSign({ name:name, type:type }, process.env.privatekey);
+    return `Bearer ${token}`;
+}
+
+module.exports = {extractUserTokenFromAuthToken, createToken};

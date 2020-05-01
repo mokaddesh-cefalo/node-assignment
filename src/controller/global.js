@@ -6,7 +6,12 @@ const requestLogger = async (req, res, next) => {
 }
 
 const registerUser = async (req, res, next) => {
-    next();
+    if(req.query.name && req.query.type) {
+        req.headers.authorization = await jwt.createToken(req.query.name, req.query.type);
+    }
+
+    if(req.headers.authorization) next();
+    else { res.render('login'); }
 }
 
  // token = await jwt.jwtSign({ foo: 'bar' }, process.env.privatekey);
