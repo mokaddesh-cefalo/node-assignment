@@ -16,22 +16,19 @@ const createChatRoom = async (req) => {
     return chatroom;
 }
 
-const getAllChatRoom = async () => {
-    let chatRoom = await chatRoomRepository.getAllChatRoom();
-    return chatRoom;
+const getAllChatRoom = async (req) => {
+    let chatRooms = await chatRoomRepository.getAllChatRoom();
+    chatRooms = chatRooms.map(room => {
+        let joined = room.users.find(user => user._id === req.user._id);
+        room.joined = (joined) ? true : false;
+        return room;
+    });
+    return chatRooms;
 }
 
 const getChatRoomById = async (chatRoom_id, loggedInUser) => {
-    let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
-    let user = chatRoom.users.find(user => user._id === loggedInUser._id);
-
-    if(!user) {
-        await chatRoomRepository.addUserInChatRoom(chatRoom, {
-            _id: loggedInUser._id,
-            name: loggedInUser.name,
-            type: loggedInUser.type
-        });
-    }
+    let chatRoom = (await chatRoomRepository.getChatRoomById(chatRoom_id));
+    giveAccessForQuestion(chatRoom, loggedInUser);
     return chatRoom;
 }
 
@@ -69,6 +66,32 @@ const addLoggedInUserToChatRoom = async (chatRoom_id, loggedInUser) => {
     return chatRoom;
 }
 
+const addQuestion = async req => {
+    let question = {
+        statement: req.body.statement,
+        creator_id: req.user._id,
+        creator_name: req.user._id,
+    }
+    
+    let chatRoom = await chatRoomRepository.addQuestion(req.params._id, question);
+    return chatRoom;
+}
+
 module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
     insertMessage, getAllMessage, getAllUser,
-    addLoggedInUserToChatRoom };
+    addLoggedInUserToChatRoom, addQuestion };
+
+function giveAccessForQuestion(chatRoom, loggedInUser) {
+    if (chatRoom.question) {
+        if (loggedInUser.type === 'interviewer' && chatRoom.question.creator_id === loggedInUser._id) {
+            chatRoom.question.access = 'update';
+        }
+        else {
+            chatRoom.question.access = 'disabled';
+        }
+    }
+    else if (loggedInUser.type === 'interviewer') {
+        chatRoom.question = {};
+        chatRoom.question.access = 'create';
+    }
+}

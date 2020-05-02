@@ -81,7 +81,10 @@ const getAllUser = async (req, res) => {
     try {
         let users =  await chatRoomService.getAllUser(req.params._id, req.user); 
 
-        res.render('user', { users });
+        res.render('user', { 
+            users,
+            layout: false 
+        });
     }  catch(e) {
         console.log(e);
         res.status(e.code);
@@ -100,6 +103,15 @@ const addLoggedInUserToChatRoom = async (req, res) => {
     }
 }
 
+const addQuestion =  async (req, res) => {
+    try {
+        let chatRoom =  await chatRoomService.addQuestion(req); 
+        res.send(chatRoom);
+    } catch(e) {
+
+    }
+}
+
 module.exports = { createChatroom, getAllChatRoom, getChatRoomById, 
     insertMessage, addUserToChatRoom, getAllMessage, getAllUser,
-    addLoggedInUserToChatRoom };
+    addLoggedInUserToChatRoom, addQuestion };

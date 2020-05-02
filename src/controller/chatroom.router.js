@@ -15,4 +15,8 @@ router.get('/:_id/messages', chatRoomController.getAllMessage);
 router.post('/:_id/users', chatRoomController.addLoggedInUserToChatRoom);
 router.get('/:_id/users', chatRoomController.getAllUser);
 
+router.post('/:_id/question', chatRoomController.addQuestion);
+//router.get('/:_id/question', chatRoomController.getAllUser);
+
+
 module.exports = router;

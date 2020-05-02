@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
-const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 
 
+const hbs = require('./util/custom.handlebars')(__dirname);
 const globalMiddleware = require('./controller/global.controller')
 const chatRoomRouter = require('./controller/chatroom.router');
 const chatRoomService = require('./service/chatroom.service');
@@ -24,39 +24,6 @@ db.once('open', function() {
 
 const app = express();
 const port = process.env.PORT || 3000;
-const hbs = exphbs.create({
-    defaultLayout: 'main', 
-    layoutsDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials'),
-    extname: 'handlebars',
-
-    helpers: {
-        chatRoomUser: function(user) {
-            return `<p>${user.name}(${user.type})</p>`;
-        },
-        chatRoomLogIn: function(chatRoom) {
-            let button = !chatRoom.joined ? `<button onclick=joinRoom('${ chatRoom._id }')> Join </button>` :
-            `<button onclick=enterRoom('${ chatRoom._id }')> Enter </button>`;
-            let name = `<h1>${chatRoom.name}</h1>`;
-            let description = `<h4>${chatRoom.description}</h4>`;
-            let creationTime = `<h6>${chatRoom.createdDate}</h6>`;
-        
-            return `${name} ${description} ${creationTime} ${button}`
-        },
-        chatRoomMessage: function(value, options) {
-            let out = "<ul>";
-
-            for(let i = 0; i < value.length; i++) {
-                out = out + "<li>" + 
-                options.fn({ 
-                    user_name: `${value[i].user_name}`, 
-                    message: `${value[i].message} <br />` 
-                }) + "</li>";
-            }
-            return out + "</ul>"; 
-        }
-    }
-});
 
 app.set('views', path.join(__dirname, 'views'));
 
@@ -81,13 +48,7 @@ app.use(globalMiddleware.addUserInfoFromToken);
 app.use('/chatrooms', chatRoomRouter);
 
 app.use('/', async (req, res) => {
-    let chatRooms = await chatRoomService.getAllChatRoom();
-
-    chatRooms = chatRooms.map(room => {
-        let joined = room.users.find(user => user._id === req.user._id);
-        room.joined = (joined) ? true : false;
-        return room;
-    });
+    let chatRooms = await chatRoomService.getAllChatRoom(req);
 
     res.cookie('authorization', req.cookies.authorization, { maxAge: 356 * 60 * 60 * 1000, httpOnly: true });
     res.render('home', { chatRooms });

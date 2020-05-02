@@ -6,6 +6,11 @@ const chatRoomSchema = new Schema ({
     description: { type: String, required: true },
     creator: { type: String, required: true },
     createdDate: { type: Date, default: Date.now },
+    question: {
+        statement: String,
+        creator_id: String,
+        creator_name: String
+    },
     users: [
         {
             _id: { type: String },

@@ -1,4 +1,6 @@
 {{> menu }}
+{{log chatroom.question }}
+{{{chatRoomQuestion chatroom.question }}}
 <div class="chatroom">
     <h1>  {{ chatroom.name }} </h1>
     <h4>  {{ chatroom.description }} </h4>
@@ -21,6 +23,16 @@
 </div>
 
 <script type="text/javascript">
+    const updateStatement = () => {
+        let statement = $("#statement").val().trim();
+        let chatRoomId = $("#chatroom_id").val();
+        let url = `http://localhost:3000/chatrooms/${chatRoomId}/question/`;
+
+        $.post(url, { 'statement': statement }, (data, status) => {
+             location.replace(`http://localhost:3000/chatrooms/${chatRoomId}/`);
+        });
+    }
+
     const sendMessage = () => {
         let message = $("#message").val().trim();
 
@@ -51,6 +63,6 @@
         });
     }
 
-    setInterval(update, 3000);
+    setInterval(update, 6000);
 </script>
 <input type="hidden" id="chatroom_id" name="chatroom_id" value="{{ chatroom._id }}">

@@ -22,7 +22,7 @@ const getAllChatRoom = async () => {
 }
 
 const addUserInChatRoom = async(_id, user) => {
-    let chatRoom = await ChatRoomModel.findById(_id,);
+    let chatRoom = await ChatRoomModel.findById(_id);
     chatRoom.users.push(user);
     await chatRoom.save();
 }
@@ -41,4 +41,14 @@ const doFindQuery = async (options) => {
     return chatRooms;
 }
 
-module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, addUserInChatRoom, insertMessage };
+const addQuestion = async (_id, question) => {
+    console.log(_id);
+    let chatRoom = await ChatRoomModel.findById(_id);
+    chatRoom.question = question;
+    chatRoom = await chatRoom.save();
+
+    return chatRoom;
+}
+
+module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
+    addUserInChatRoom, insertMessage, addQuestion };
