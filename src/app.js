@@ -72,10 +72,11 @@ app.use(cookieParser());
 
 app.use(globalMiddleware.requestLogger);
 
+app.use('/logout', globalMiddleware.removeUser);
+
 app.use(globalMiddleware.registerUser);
 
 app.use(globalMiddleware.addUserInfoFromToken);
-
 
 app.use('/chatrooms', chatRoomRouter);
 
@@ -88,7 +89,7 @@ app.use('/', async (req, res) => {
         return room;
     });
 
-    res.cookie('authorization', req.cookies.authorization);
+    res.cookie('authorization', req.cookies.authorization, { maxAge: 356 * 60 * 60 * 1000, httpOnly: true });
     res.render('home', { chatRooms });
 });
 

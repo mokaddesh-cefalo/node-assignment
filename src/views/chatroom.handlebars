@@ -1,3 +1,4 @@
+{{> menu }}
 <div class="chatroom">
     <h1>  {{ chatroom.name }} </h1>
     <h4>  {{ chatroom.description }} </h4>
@@ -20,21 +21,36 @@
 </div>
 
 <script type="text/javascript">
-  const sendMessage = () => {
-    let message = $("#message").val().trim();
+    const sendMessage = () => {
+        let message = $("#message").val().trim();
 
-    if(!message) {
-        $("#emptyMessage").text('* Write something');
-        return;
+        if(!message) {
+            $("#emptyMessage").text('* Write something');
+            return;
+        }
+        let chatRoomId = $("#chatroom_id").val();
+        let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
+
+        $.post(url, { 'message': message }, (data, status) => {
+            $(".message").html(data);
+            $("#emptyMessage").text('');
+            $("#message").val('');
+        });
     }
-    let chatRoomId = $("#chatroom_id").val();
-    let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
 
-    $.post(url, { 'message': message }, (data, status) => {
-        $(".message").html(data);
-        $("#emptyMessage").text('');
-        $("#message").val('')
-    });
-}
+    const update = () => {
+        let chatRoomId = $("#chatroom_id").val();
+        let url = `http://localhost:3000/chatrooms/${chatRoomId}`;
+
+        $.get(`${url}/messages`, (data, status) => {
+            $(".message").html(data);
+        });
+
+        $.get(`${url}/users`, (data, status) => {
+            $(".user").html(data);
+        });
+    }
+
+    setInterval(update, 3000);
 </script>
 <input type="hidden" id="chatroom_id" name="chatroom_id" value="{{ chatroom._id }}">

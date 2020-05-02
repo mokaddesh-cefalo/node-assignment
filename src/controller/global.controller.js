@@ -14,14 +14,19 @@ const registerUser = async (req, res, next) => {
     else { res.render('login'); }
 }
 
+const removeUser = async (req, res, next) => {
+    res.cookie('authorization', req.cookies.authorization, { maxAge: 0, httpOnly: true });
+    res.render('login');
+}
+
 const addUserInfoFromToken = async (req, res, next) => {
     try {
         req.user = await userService.getUserInfoFromToken(req.cookies.authorization);
     } catch (e) {
-       res.status(e.code);
-       res.send({ reason: e.message });
+        res.render('login');
     }
     next();
 }
 
-module.exports = {requestLogger, addUserInfoFromToken, registerUser};
+module.exports = {requestLogger, addUserInfoFromToken, registerUser,
+    removeUser};
