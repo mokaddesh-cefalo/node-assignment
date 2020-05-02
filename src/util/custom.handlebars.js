@@ -33,20 +33,40 @@ module.exports = (rootDir) => {
                 }
                 return out + "</ul>"; 
             },
+            chatRoomAnswers: function(value, options) {  
+                let out = '';
+
+                if(value) {
+                    for(let i = 0; i < value.length; i++) {
+                        out = out + 
+                        options.fn({ 
+                            user_name: `<h4>${value[i].user_name}' solution</h4>`, 
+                            message: `<textarea id="statement" disabled rows="10" cols="60">${value[i].message}</textarea>` 
+                        });
+                    }
+                }
+
+                return out; 
+            },
             chatRoomQuestion: function(question) {
-                let statement = '', button = '';
+                let statement = '', button = '', answer = '';
 
                 if(!question) { return ''; }
                 else if (question.statement) {
-                    statement = `<textarea id="statement" ${question.access} rows="10" cols="80">${question.statement}</textarea>`;
+                    statement = `<h2>Problem statement:</h2><textarea id="statement" ${question.access} rows="10" cols="60">${question.statement}</textarea>`;
                 } else if(question.access === 'create') {
-                    statement = `<textarea id="statement" rows="10" cols="80" placeholder="Describe question here..."></textarea>`
+                    statement = `<h2>Problem statement:</h2><textarea id="statement" rows="10" cols="60" placeholder="Describe question here..."></textarea>`
                 }
 
                 if(question.access === 'update' || question.access === 'create') {
                     button = `<button onclick=updateStatement()> ${question.access} </button>`;
                 }
-                return `${statement} <br /> ${button}`;
+
+                if(question.answer) {
+                    answer = `<textarea id="answer" rows="10" cols="60" placeholder="Submit your answer here..."></textarea>`;
+                    button = `<button onclick=submitAnswer()> Submit </button>`;
+                }
+                return `${statement} <br /> ${answer} <br /> ${button}`;
             },
         }
     });

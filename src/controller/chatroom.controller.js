@@ -112,6 +112,37 @@ const addQuestion =  async (req, res) => {
     }
 }
 
+const insertAnswer = async (req, res) => {
+    try {
+        let answers =  (await chatRoomService.insertAnswer(req.params._id, req.user, req.body.message)).answers;
+
+        return res.render('answer', { 
+            answers,
+            layout: false 
+        });
+    }  catch(e) {
+        console.log(e);
+        res.status(e.code);
+        res.send({ reason: e.message });
+    }
+}
+
+const getAllAnswer = async (req, res) => {
+    try {
+        let answers =  await chatRoomService.getAllAnswer(req.params._id, req.user); 
+
+        return res.render('answer', { 
+            answers,
+            layout: false 
+        });
+    }  catch(e) {
+        console.log(e);
+        res.status(e.code);
+        res.send({ reason: e.message });
+    }
+}
+
 module.exports = { createChatroom, getAllChatRoom, getChatRoomById, 
     insertMessage, addUserToChatRoom, getAllMessage, getAllUser,
-    addLoggedInUserToChatRoom, addQuestion };
+    addLoggedInUserToChatRoom, addQuestion, insertAnswer,
+    getAllAnswer };

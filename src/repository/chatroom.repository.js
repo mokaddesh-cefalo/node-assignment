@@ -50,5 +50,12 @@ const addQuestion = async (_id, question) => {
     return chatRoom;
 }
 
+const insertAnswer = async(_id, message) => {
+    let chatRoom = await ChatRoomModel.findById(_id);
+    chatRoom.answers.push(message);
+    await chatRoom.save();
+}
+
 module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
-    addUserInChatRoom, insertMessage, addQuestion };
+    addUserInChatRoom, insertMessage, addQuestion,
+    insertAnswer };

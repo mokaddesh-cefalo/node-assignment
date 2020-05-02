@@ -77,9 +77,25 @@ const addQuestion = async req => {
     return chatRoom;
 }
 
+const insertAnswer = async (chatRoom_id, loggedInUser, message) => {
+    await chatRoomRepository.insertAnswer(chatRoom_id, {
+        message: message,
+        user_id: loggedInUser._id,
+        user_name: loggedInUser.name
+    });
+
+    return (await chatRoomRepository.getChatRoomById(chatRoom_id));
+}
+
+const getAllAnswer = async (chatRoom_id) => {
+    let chatRoom = await chatRoomRepository.getAllAnswer(chatRoom_id);
+    return chatRoom.answers;
+}
+
 module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
     insertMessage, getAllMessage, getAllUser,
-    addLoggedInUserToChatRoom, addQuestion };
+    addLoggedInUserToChatRoom, addQuestion, insertAnswer,
+    getAllAnswer };
 
 function giveAccessForQuestion(chatRoom, loggedInUser) {
     if (chatRoom.question) {
@@ -88,6 +104,7 @@ function giveAccessForQuestion(chatRoom, loggedInUser) {
         }
         else {
             chatRoom.question.access = 'disabled';
+            chatRoom.question.answer = (loggedInUser.type !== 'interviewer');
         }
     }
     else if (loggedInUser.type === 'interviewer') {

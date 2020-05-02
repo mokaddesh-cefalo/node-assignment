@@ -11,6 +11,13 @@ const chatRoomSchema = new Schema ({
         creator_id: String,
         creator_name: String
     },
+    answers: [
+        {
+            message: { type: String },
+            user_id: { type: String },
+            user_name: { type: String }
+        }
+    ],
     users: [
         {
             _id: { type: String },

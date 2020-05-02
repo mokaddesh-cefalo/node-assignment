@@ -12,6 +12,9 @@ router.get('/:_id', chatRoomController.getChatRoomById);
 router.post('/:_id/messages', chatRoomController.insertMessage);
 router.get('/:_id/messages', chatRoomController.getAllMessage);
 
+router.post('/:_id/answers', chatRoomController.insertAnswer);
+router.get('/:_id/answers', chatRoomController.getAllAnswer);
+
 router.post('/:_id/users', chatRoomController.addLoggedInUserToChatRoom);
 router.get('/:_id/users', chatRoomController.getAllUser);
 

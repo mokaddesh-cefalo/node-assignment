@@ -1,10 +1,16 @@
 {{> menu }}
-{{log chatroom.question }}
-{{{chatRoomQuestion chatroom.question }}}
+
 <div class="chatroom">
     <h1>  {{ chatroom.name }} </h1>
     <h4>  {{ chatroom.description }} </h4>
     <h6>  {{ chatroom.createdDate }} </h6>
+
+    {{{chatRoomQuestion chatroom.question }}}
+    <div class="answers">
+            {{# chatRoomAnswers chatroom.answers }}
+                {{{ this.user_name }}} {{{ this.message }}} <br />
+            {{/ chatRoomAnswers }}
+    </div>
 
     <div class="user">
         {{# each chatroom.users }}
@@ -47,6 +53,17 @@
             $(".message").html(data);
             $("#emptyMessage").text('');
             $("#message").val('');
+        });
+    }
+
+    const submitAnswer = () => {
+        let answer = $("#answer").val().trim();
+        let chatRoomId = $("#chatroom_id").val();
+        let url = `http://localhost:3000/chatrooms/${chatRoomId}/answers/`;
+
+        $.post(url, { 'message': answer }, (data, status) => {
+            $(".answers").html(data);
+            $("#answer").val('');
         });
     }
 
