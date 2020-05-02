@@ -1,19 +1,27 @@
-{{ chatroom.name }}
+<div class="chatroom">
+    <h1>  {{ chatroom.name }} </h1>
+    <h4>  {{ chatroom.description }} </h4>
+    <h6>  {{ chatroom.createdDate }} </h6>
 
-{{# each chatroom.users }}
-    {{ this.name }}({{ this.type }})
-{{/ each }}
+    <div class="user">
+        {{# each chatroom.users }}
+            {{{ chatRoomUser this }}}
+        {{/ each }}
+    </div>
 
-{{# each chatroom.messages }}
-    {{ this.user_name }}: {{ this.message }}
-{{/ each }}
+    <div class="message">
+        {{# chatRoomMessage chatroom.messages }}
+            {{{ this.user_name }}}: {{{ this.message }}} <br />
+        {{/ chatRoomMessage }}
+    </div>
 
-<textarea id="message" rows="4" cols="50"></textarea> <br />
-<button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
+    <textarea id="message" rows="4" cols="50"></textarea> <br />
+    <button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
+</div>
 
 <script type="text/javascript">
   const sendMessage = () => {
-    let message = $("#message").val();
+    let message = $("#message").val().trim();
 
     if(!message) {
         $("#emptyMessage").text('* Write something');
@@ -23,7 +31,9 @@
     let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
 
     $.post(url, { 'message': message }, (data, status) => {
-        location.replace(`http://localhost:3000/chatrooms/${chatRoomId}`);
+        $(".message").html(data);
+        $("#emptyMessage").text('');
+        $("#message").val('')
     });
 }
 </script>

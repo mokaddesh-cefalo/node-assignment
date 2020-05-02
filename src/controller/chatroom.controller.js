@@ -2,8 +2,7 @@ const chatRoomService = require('../service/chatroom.service');
 
 const createChatroom = async (req, res) => {
     try {
-        console.log(req.body);
-        let chatRoom =  await chatRoomService.createChatRoom(req.body.name, req.user._id);
+        let chatRoom =  await chatRoomService.createChatRoom(req);
         
         res.send(chatRoom);
     }  catch(e) {
@@ -42,6 +41,7 @@ const getChatRoomById = async (req, res) => {
 const addUserToChatRoom = async (req, res) => {
     try {
         let chatRoom =  await chatRoomService.getChatRoomById(req.params._id, req.user); 
+
         res.send(chatRoom);
     }  catch(e) {
         console.log(e);
@@ -53,9 +53,10 @@ const addUserToChatRoom = async (req, res) => {
 const insertMessage = async (req, res) => {
     try {
         let chatRoom =  await chatRoomService.insertMessage(req.params._id, req.user, req.body.message);
-        
-        res.render('chatroom', { 
-            'chatroom': chatRoom
+        let messages = chatRoom.messages;
+        res.render('message', { 
+            messages,
+            layout: false
         });
     }  catch(e) {
         console.log(e);
@@ -64,4 +65,41 @@ const insertMessage = async (req, res) => {
     }
 }
 
-module.exports = { createChatroom, getAllChatRoom, getChatRoomById, insertMessage, addUserToChatRoom };
+const getAllMessage = async (req, res) => {
+    try {
+        let messages =  await chatRoomService.getAllMessage(req.params._id, req.user); 
+
+        res.render('message', { messages });
+    }  catch(e) {
+        console.log(e);
+        res.status(e.code);
+        res.send({ reason: e.message });
+    }
+}
+
+const getAllUser = async (req, res) => {
+    try {
+        let users =  await chatRoomService.getAllUser(req.params._id, req.user); 
+
+        res.render('user', { users });
+    }  catch(e) {
+        console.log(e);
+        res.status(e.code);
+        res.send({ reason: e.message });
+    }
+}
+
+const addLoggedInUserToChatRoom = async (req, res) => {
+    try {
+        let chatRoom =  await chatRoomService.addLoggedInUserToChatRoom(req.params._id, req.user); 
+        res.send(chatRoom);
+    }  catch(e) {
+        console.log(e);
+        res.status(e.code);
+        res.send({ reason: e.message });
+    }
+}
+
+module.exports = { createChatroom, getAllChatRoom, getChatRoomById, 
+    insertMessage, addUserToChatRoom, getAllMessage, getAllUser,
+    addLoggedInUserToChatRoom };

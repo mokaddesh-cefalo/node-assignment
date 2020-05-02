@@ -17,7 +17,6 @@ const registerUser = async (req, res, next) => {
 const addUserInfoFromToken = async (req, res, next) => {
     try {
         req.user = await userService.getUserInfoFromToken(req.cookies.authorization);
-        console.log(`Added user ${req.user}`);
     } catch (e) {
        res.status(e.code);
        res.send({ reason: e.message });

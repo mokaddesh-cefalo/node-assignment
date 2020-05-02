@@ -1,13 +1,13 @@
 const chatRoomRepository = require('../repository/chatroom.repository');
 
-const createChatRoom = async (chatRoomName, creatorId) => {
+const createChatRoom = async (req) => {
     let chatroom = null;
+    let roomInfo = req.body;
+    roomInfo.creator = req.user._id;
 
+    console.log(roomInfo);
     try {
-        chatroom = await chatRoomRepository.createChatRoom({
-            name: chatRoomName,
-            creator: creatorId
-        });
+        chatroom = await chatRoomRepository.createChatRoom(roomInfo);
     } catch (error) {
         console.log(error.message);
         throw error;
@@ -23,9 +23,8 @@ const getAllChatRoom = async () => {
 
 const getChatRoomById = async (chatRoom_id, loggedInUser) => {
     let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
-    console.log(chatRoom);
-    
     let user = chatRoom.users.find(user => user._id === loggedInUser._id);
+
     if(!user) {
         await chatRoomRepository.addUserInChatRoom(chatRoom, {
             _id: loggedInUser._id,
@@ -46,4 +45,30 @@ const insertMessage = async (chatRoom_id, loggedInUser, message) => {
     return (await chatRoomRepository.getChatRoomById(chatRoom_id));
 }
 
-module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, insertMessage };
+const getAllMessage = async (chatRoom_id) => {
+    let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
+    return chatRoom.messages;
+}
+
+const getAllUser = async (chatRoom_id) => {
+    let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
+    return chatRoom.users;
+}
+
+const addLoggedInUserToChatRoom = async (chatRoom_id, loggedInUser) => {
+    let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
+    let user = chatRoom.users.find(user => user._id === loggedInUser._id);
+
+    if(!user) {
+        await chatRoomRepository.addUserInChatRoom(chatRoom, {
+            _id: loggedInUser._id,
+            name: loggedInUser.name,
+            type: loggedInUser.type
+        });
+    }
+    return chatRoom;
+}
+
+module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
+    insertMessage, getAllMessage, getAllUser,
+    addLoggedInUserToChatRoom };

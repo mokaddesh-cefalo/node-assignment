@@ -1,14 +1,19 @@
 {{# each chatRooms }}
-    {{log this}}
-    <button onclick="joinRoom('{{ this._id }}')">{{ this.name }}</button>
+    {{{ chatRoomLogIn this }}}
+    {{!-- {{log this}}
+    {{ this.name }} {{ this.joined }} <button onclick="joinRoom('{{ this._id }}')"> join </button> --}}
 {{/ each }}
 
 
 <script type="text/javascript">
   const joinRoom = (id) => {
-    let url = `http://localhost:3000/chatrooms/${id}`;
+    let url = `http://localhost:3000/chatrooms/${id}/users`;
     $.post(url, {}, (data, status) => {
-        location.replace(url);
+        location.replace('http://localhost:3000');
     });    
+}
+
+const enterRoom = (id) => {
+    location.replace(`http://localhost:3000/chatrooms/${id}`);   
 }
 </script>
