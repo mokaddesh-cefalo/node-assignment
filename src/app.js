@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
+var cookieParser = require('cookie-parser');
 
 
 const globalMiddleware = require('./controller/global.controller')
@@ -30,7 +31,6 @@ const hbs = exphbs.create({
     extname: 'handlebars'
 });
 
-
 app.set('views', path.join(__dirname, 'views'));
 
 app.engine('handlebars', hbs.engine);
@@ -40,6 +40,8 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 app.use(globalMiddleware.requestLogger);
 
@@ -52,9 +54,9 @@ app.use('/chatrooms', chatRoomRouter);
 
 app.use('/', async (req, res) => {
     let chatRooms = await chatRoomService.getAllChatRoom();
-    let token = req.headers.authorization;
+    let token = req.cookies.authorization;
 
-    res.setHeader('authorization', req.headers.authorization);
+    res.cookie('authorization', req.cookies.authorization);
     res.render('home', { token, chatRooms });
 });
 

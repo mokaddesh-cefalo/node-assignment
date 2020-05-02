@@ -23,9 +23,16 @@ const getAllChatRoom = async () => {
 }
 
 const addUserInChatRoom = async(_id, user) => {
-    let chatRoom = await ChatRoomModel.findById(_id);
+    let chatRoom = await ChatRoomModel.findById(_id,);
     chatRoom.users.push(user);
-    await chatRoom.save().exec();
+    await chatRoom.save();
+    console.log(chatRoom);
+}
+
+const insertMessage = async(_id, message) => {
+    let chatRoom = await ChatRoomModel.findById(_id);
+    chatRoom.messages.push(message);
+    await chatRoom.save();
     console.log(chatRoom);
 }
 
@@ -37,4 +44,4 @@ const doFindQuery = async (options) => {
     return chatRooms;
 }
 
-module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, addUserInChatRoom };
+module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, addUserInChatRoom, insertMessage };

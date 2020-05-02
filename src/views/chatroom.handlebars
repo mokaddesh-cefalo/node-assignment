@@ -3,3 +3,28 @@
 {{# each chatroom.users }}
     {{ this.name }}({{ this.type }})
 {{/ each }}
+
+{{# each chatroom.messages }}
+    {{ this.user_name }}: {{ this.message }}
+{{/ each }}
+
+<textarea id="message" rows="4" cols="50"></textarea> <br />
+<button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
+
+<script type="text/javascript">
+  const sendMessage = () => {
+    let message = $("#message").val();
+
+    if(!message) {
+        $("#emptyMessage").text('* Write something');
+        return;
+    }
+    let chatRoomId = $("#chatroom_id").val();
+    let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
+
+    $.post(url, { 'message': message }, (data, status) => {
+        location.replace(`http://localhost:3000/chatrooms/${chatRoomId}`);
+    });
+}
+</script>
+<input type="hidden" id="chatroom_id" name="chatroom_id" value="{{ chatroom._id }}">

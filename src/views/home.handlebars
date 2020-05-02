@@ -6,21 +6,9 @@
 
 <script type="text/javascript">
   const joinRoom = (id) => {
-    let url = "http://localhost:3000/chatrooms/" + id;
-    let token = $("#token").val();
-
-    $.get({
-            url: url,
-            headers: {
-                'authorization': token
-            },
-            success: (result) => {
-                document.open();
-                console.log(result);
-                document.write(result);
-                document.close();
-            }
-        });
-      
-  }
+    let url = `http://localhost:3000/chatrooms/${id}`;
+    $.post(url, {}, (data, status) => {
+        location.replace(url);
+    });    
+}
 </script>

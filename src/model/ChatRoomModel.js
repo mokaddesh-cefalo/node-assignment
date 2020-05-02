@@ -11,6 +11,13 @@ const chatRoomSchema = new Schema ({
             name: { type: String },
             type: { type: String }
         }
+    ],
+    messages: [
+        {
+            message: { type: String },
+            user_id: { type: String },
+            user_name: { type: String }
+        }
     ]
 });
 
