@@ -88,14 +88,9 @@ const insertAnswer = async (chatRoom_id, loggedInUser, message) => {
 }
 
 const getAllAnswer = async (chatRoom_id) => {
-    let chatRoom = await chatRoomRepository.getAllAnswer(chatRoom_id);
+    let chatRoom = await chatRoomRepository.getChatRoomById(chatRoom_id);
     return chatRoom.answers;
 }
-
-module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
-    insertMessage, getAllMessage, getAllUser,
-    addLoggedInUserToChatRoom, addQuestion, insertAnswer,
-    getAllAnswer };
 
 function giveAccessForQuestion(chatRoom, loggedInUser) {
     if (chatRoom.question) {
@@ -112,3 +107,8 @@ function giveAccessForQuestion(chatRoom, loggedInUser) {
         chatRoom.question.access = 'create';
     }
 }
+
+module.exports = { createChatRoom, getAllChatRoom, getChatRoomById, 
+    insertMessage, getAllMessage, getAllUser,
+    addLoggedInUserToChatRoom, addQuestion, insertAnswer,
+    getAllAnswer };

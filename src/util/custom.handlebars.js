@@ -53,9 +53,9 @@ module.exports = (rootDir) => {
 
                 if(!question) { return ''; }
                 else if (question.statement) {
-                    statement = `<h2>Problem statement:</h2><textarea id="statement" ${question.access} rows="10" cols="60">${question.statement}</textarea>`;
+                    statement = `<h3>Problem statement:</h3><textarea id="statement" ${question.access} rows="10" cols="60">${question.statement}</textarea>`;
                 } else if(question.access === 'create') {
-                    statement = `<h2>Problem statement:</h2><textarea id="statement" rows="10" cols="60" placeholder="Describe question here..."></textarea>`
+                    statement = `<h3>Problem statement:</h3><textarea id="statement" rows="10" cols="60" placeholder="Describe question here..."></textarea>`
                 }
 
                 if(question.access === 'update' || question.access === 'create') {

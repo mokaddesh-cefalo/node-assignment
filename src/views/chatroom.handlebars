@@ -5,27 +5,36 @@
     <h4>  {{ chatroom.description }} </h4>
     <h6>  {{ chatroom.createdDate }} </h6>
 
-    {{{chatRoomQuestion chatroom.question }}}
-    <div class="answers">
+    <div >
+            {{{chatRoomQuestion chatroom.question }}}
+        <div class="answers">
             {{# chatRoomAnswers chatroom.answers }}
                 {{{ this.user_name }}} {{{ this.message }}} <br />
             {{/ chatRoomAnswers }}
+        </div>
     </div>
 
-    <div class="user">
-        {{# each chatroom.users }}
-            {{{ chatRoomUser this }}}
-        {{/ each }}
+    <div>
+        <div class="one">
+            <div class="user">
+                {{# each chatroom.users }}
+                    {{{ chatRoomUser this }}}
+                {{/ each }}
+            </div>
+        </div>
+
+        <div class="two">
+            <div class="message">
+                {{# chatRoomMessage chatroom.messages }}
+                    {{{ this.user_name }}} {{{ this.message }}} <br />
+                {{/ chatRoomMessage }}
+            </div>
+
+            <textarea id="message" rows="4" cols="50"></textarea> <br />
+            <button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
+        </div>
     </div>
 
-    <div class="message">
-        {{# chatRoomMessage chatroom.messages }}
-            {{{ this.user_name }}}: {{{ this.message }}} <br />
-        {{/ chatRoomMessage }}
-    </div>
-
-    <textarea id="message" rows="4" cols="50"></textarea> <br />
-    <button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
 </div>
 
 <script type="text/javascript">
@@ -77,6 +86,10 @@
 
         $.get(`${url}/users`, (data, status) => {
             $(".user").html(data);
+        });
+
+        $.get(`${url}/answers`, (data, status) => {
+            $(".answers").html(data);
         });
     }
 
