@@ -4,7 +4,7 @@ const createChatRoom = async (req) => {
     let chatroom = null;
     let roomInfo = req.body;
     roomInfo.creator = req.user._id;
-
+    
     try {
         chatroom = await chatRoomRepository.createChatRoom(roomInfo);
     } catch (error) {
@@ -80,7 +80,7 @@ const addQuestion = async req => {
     }
     
     let chatRoom = await chatRoomRepository.addQuestion(req.params._id, question);
-    
+
     return chatRoom;
 }
 

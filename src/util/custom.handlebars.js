@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = (rootDir) => {
     return exphbs.create ({
-        
+
         defaultLayout: 'main', 
         layoutsDir: path.join(rootDir, 'views/layouts'),
         partialsDir: path.join(rootDir, 'views/partials'),
@@ -27,10 +27,14 @@ module.exports = (rootDir) => {
                 let out = '';
     
                 for(let i = 0; i < value.length; i++) {
+                    let date = (value[i].createdDate + '');
+                    date = date.slice(0, date.indexOf('GMT'));
+
                     out = out + 
                     options.fn({ 
-                        user_name: `<b>${value[i].user_name}</b>:`, 
-                        message: `${value[i].message} <br /> <br /> ` 
+                        user_name: `<sup> ${value[i].user_name}`,
+                        time: ` at ${date}</sup> <br /> <br />`,
+                        message: `${value[i].message} <br /> `
                     });
                 }
 

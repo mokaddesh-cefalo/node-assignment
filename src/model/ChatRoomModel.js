@@ -15,21 +15,24 @@ const chatRoomSchema = new Schema ({
         {
             message: { type: String },
             user_id: { type: String },
-            user_name: { type: String }
+            user_name: { type: String },
+            createdDate: { type: Date, default: Date.now }
         }
     ],
     users: [
         {
             _id: { type: String },
             name: { type: String },
-            type: { type: String }
+            type: { type: String },
+            createdDate: { type: Date, default: Date.now }
         }
     ],
     messages: [
         {
             message: { type: String },
             user_id: { type: String },
-            user_name: { type: String }
+            user_name: { type: String },
+            createdDate: { type: Date, default: Date.now }
         }
     ]
 });
