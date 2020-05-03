@@ -1,98 +1,40 @@
 {{> menu }}
 
 <div class="chatroom">
-    <h1>  {{ chatroom.name }} </h1>
-    <h4>  {{ chatroom.description }} </h4>
-    <h6>  {{ chatroom.createdDate }} </h6>
+    <div class="info">
+        <h1>  {{ chatroom.name }} </h1>
+        <h4>  {{ chatroom.description }} </h4>
+        <h6>  {{ chatroom.createdDate }} </h6>
+    </div>
 
-    <div >
+    <div class="container">
+        <div class="question">
             {{{chatRoomQuestion chatroom.question }}}
+        </div>
         <div class="answers">
-            {{# chatRoomAnswers chatroom.answers }}
-                {{{ this.user_name }}} {{{ this.message }}} <br />
-            {{/ chatRoomAnswers }}
+            {{> answerTemplate chatroom.answers }}
         </div>
     </div>
 
-    <div>
+    <div class="container">
         <div class="one">
             <div class="user">
-                {{# each chatroom.users }}
-                    {{{ chatRoomUser this }}}
-                {{/ each }}
+                {{> userTemplate chatroom.users }}
             </div>
         </div>
 
         <div class="two">
             <div class="message">
-                {{# chatRoomMessage chatroom.messages }}
-                    {{{ this.user_name }}} {{{ this.message }}} <br />
-                {{/ chatRoomMessage }}
+                {{> messageTemplate chatroom.messages}}
             </div>
 
             <textarea id="message" rows="4" cols="50"></textarea> <br />
             <button onclick='sendMessage()'>Send Message</button> <span id="emptyMessage"></span>
         </div>
     </div>
-
+    <input type="hidden" id="chatroom_id" name="chatroom_id" value="{{ chatroom._id }}">
 </div>
 
 <script type="text/javascript">
-    const updateStatement = () => {
-        let statement = $("#statement").val().trim();
-        let chatRoomId = $("#chatroom_id").val();
-        let url = `http://localhost:3000/chatrooms/${chatRoomId}/question/`;
-
-        $.post(url, { 'statement': statement }, (data, status) => {
-             location.replace(`http://localhost:3000/chatrooms/${chatRoomId}/`);
-        });
-    }
-
-    const sendMessage = () => {
-        let message = $("#message").val().trim();
-
-        if(!message) {
-            $("#emptyMessage").text('* Write something');
-            return;
-        }
-        let chatRoomId = $("#chatroom_id").val();
-        let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
-
-        $.post(url, { 'message': message }, (data, status) => {
-            $(".message").html(data);
-            $("#emptyMessage").text('');
-            $("#message").val('');
-        });
-    }
-
-    const submitAnswer = () => {
-        let answer = $("#answer").val().trim();
-        let chatRoomId = $("#chatroom_id").val();
-        let url = `http://localhost:3000/chatrooms/${chatRoomId}/answers/`;
-
-        $.post(url, { 'message': answer }, (data, status) => {
-            $(".answers").html(data);
-            $("#answer").val('');
-        });
-    }
-
-    const update = () => {
-        let chatRoomId = $("#chatroom_id").val();
-        let url = `http://localhost:3000/chatrooms/${chatRoomId}`;
-
-        $.get(`${url}/messages`, (data, status) => {
-            $(".message").html(data);
-        });
-
-        $.get(`${url}/users`, (data, status) => {
-            $(".user").html(data);
-        });
-
-        $.get(`${url}/answers`, (data, status) => {
-            $(".answers").html(data);
-        });
-    }
-
     setInterval(update, 6000);
 </script>
-<input type="hidden" id="chatroom_id" name="chatroom_id" value="{{ chatroom._id }}">

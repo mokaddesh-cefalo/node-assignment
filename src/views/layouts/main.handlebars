@@ -1,18 +1,110 @@
 <!DOCTYPE html>
 <html>
-    <style>
-        .one {
-            width: 30%;
-            float: left;
-        }
-
-        .two {
-            margin-left: 30%;
-        }
-    </style>
     <head>
         <title>{{ title }}</title>
+        <style>
+            .info {
+                padding: 15px;
+                margin: 15px;
+            }
+            .container {
+                background-color: rgba(207, 203, 203, 0.993);
+                width: 600px;        
+                padding: 50px;
+                margin: 20px;
+            }
+
+            .one {
+                width: 30%;
+                float: left;
+                padding: 5px;
+            }
+
+            .two {
+                border-left: 6px solid green;
+                padding: 18px;
+                margin-left: 30%;
+            }
+        </style>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript">
+        
+            const updateStatement = () => {
+                let statement = $("#statement").val().trim();
+                let chatRoomId = $("#chatroom_id").val();
+                let url = `http://localhost:3000/chatrooms/${chatRoomId}/question/`;
+
+                $.post(url, { 'statement': statement }, (data, status) => {
+                    location.replace(`http://localhost:3000/chatrooms/${chatRoomId}/`);
+                });
+            }
+
+            const sendMessage = () => {
+                let message = $("#message").val().trim();
+
+                if(!message) {
+                    $("#emptyMessage").text('* Write something');
+                    return;
+                }
+                let chatRoomId = $("#chatroom_id").val();
+                let url = `http://localhost:3000/chatrooms/${chatRoomId}/messages/`;
+
+                $.post(url, { 'message': message }, (data, status) => {
+                    $(".message").html(data);
+                    $("#emptyMessage").text('');
+                    $("#message").val('');
+                });
+            }
+
+            const submitAnswer = () => {
+                let answer = $("#answer").val().trim();
+                let chatRoomId = $("#chatroom_id").val();
+                let url = `http://localhost:3000/chatrooms/${chatRoomId}/answers/`;
+
+                $.post(url, { 'message': answer }, (data, status) => {
+                    $(".answers").html(data);
+                    $("#answer").val('');
+                });
+            }
+
+            const update = () => {
+                let chatRoomId = $("#chatroom_id").val();
+                let url = `http://localhost:3000/chatrooms/${chatRoomId}`;
+
+                $.get(`${url}/messages`, (data, status) => {
+                    $(".message").html(data);
+                });
+
+                $.get(`${url}/users`, (data, status) => {
+                    $(".user").html(data);
+                });
+
+                $.get(`${url}/answers`, (data, status) => {
+                    $(".answers").html(data);
+                });
+            }
+
+            const joinRoom = (id) => {
+                let url = `http://localhost:3000/chatrooms/${id}/users`;
+                $.post(url, {}, (data, status) => {
+                    location.replace('http://localhost:3000');
+                });    
+            }
+
+            const enterRoom = (id) => {
+                location.replace(`http://localhost:3000/chatrooms/${id}`);   
+            }
+
+            function validateForm() {
+                var name = document.forms["loginFrom"]["name"].value.trim();
+                if (!name) {
+                alert("Name must be filled out");
+                return false;
+                }
+            }
+            
+        </script>
     </head>
     <body>
         {{{ body }}}

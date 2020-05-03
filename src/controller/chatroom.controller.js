@@ -54,6 +54,7 @@ const insertMessage = async (req, res) => {
     try {
         let chatRoom =  await chatRoomService.insertMessage(req.params._id, req.user, req.body.message);
         let messages = chatRoom.messages;
+        
         res.render('message', { 
             messages,
             layout: false
@@ -69,7 +70,7 @@ const getAllMessage = async (req, res) => {
     try {
         let messages =  await chatRoomService.getAllMessage(req.params._id, req.user); 
 
-        res.render('message', { messages });
+        res.render('message', { messages, layout: false });
     }  catch(e) {
         console.log(e);
         res.status(e.code);
@@ -95,6 +96,7 @@ const getAllUser = async (req, res) => {
 const addLoggedInUserToChatRoom = async (req, res) => {
     try {
         let chatRoom =  await chatRoomService.addLoggedInUserToChatRoom(req.params._id, req.user); 
+
         res.send(chatRoom);
     }  catch(e) {
         console.log(e);
@@ -106,6 +108,7 @@ const addLoggedInUserToChatRoom = async (req, res) => {
 const addQuestion =  async (req, res) => {
     try {
         let chatRoom =  await chatRoomService.addQuestion(req); 
+
         res.send(chatRoom);
     } catch(e) {
 

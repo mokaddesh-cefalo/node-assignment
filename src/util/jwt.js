@@ -22,6 +22,7 @@ const extractInfoFromToken = async (authorization) => {
 
 const createToken = async (info) => {
     let token = await jwtSign({ data: info }, process.env.privatekey);
+    
     return `Bearer ${token}`;
 }
 
